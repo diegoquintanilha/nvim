@@ -88,6 +88,16 @@ return {
 			local end_indent_count = vim.fn.indent(line_end)
 			local indent_spaces = string.rep(" ", start_indent_count)
 
+			-- Check for named custom folds (regions)
+			local region_name = string.match(start_text, "^%s*#%s*region%s+(.+)")
+			if not region_name then
+				region_name = string.match(start_text, "^%s*#pragma%s+region%s+(.+)")
+			end
+			if region_name then
+				-- If the region has an explicit name, the fold must simply reproduce it
+				return indent_spaces .. "▶  " .. region_name .. " [+" .. line_count .. " lines]"
+			end
+
 			-- Check if indentation of first and last line of the fold match
 			if start_indent_count == end_indent_count then
 
