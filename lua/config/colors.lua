@@ -23,6 +23,7 @@ color_comment = { fg = "#707070" } -- Gray
 vim.api.nvim_set_hl(0, "Normal", color_background)
 vim.api.nvim_set_hl(0, "Visual", color_highlight)
 vim.api.nvim_set_hl(0, "WinSeparator", color_comment)
+vim.api.nvim_set_hl(0, "IblIndent", color_comment)
 
 vim.api.nvim_set_hl(0, "StatusLine", color_highlight)
 vim.opt.laststatus = 3 -- Fix a single status bar
