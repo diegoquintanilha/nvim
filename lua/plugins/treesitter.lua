@@ -89,31 +89,37 @@ return {
 			local indent_spaces = string.rep(" ", start_indent_count)
 
 			-- Check for named custom folds (regions)
-			local region_name = string.match(start_text, "^%s*#%s*region%s+(.+)")
+			local region_name = start_text:match("^%s*#%s*region%s+(.+)")
 			if not region_name then
-				region_name = string.match(start_text, "^%s*#pragma%s+region%s+(.+)")
+				region_name = start_text:match("^%s*#pragma%s+region%s+(.+)")
 			end
 			if region_name then
 				-- If the region has an explicit name, the fold must simply reproduce it
-				return indent_spaces .. "▶  " .. region_name .. " [+" .. line_count .. " lines]"
+				-- return indent_spaces .. "▶  " .. region_name .. " [+" .. line_count .. " lines]"
+				return indent_spaces .. region_name .. " [+" .. line_count .. " lines]"
 			end
 
 			-- Check if indentation of first and last line of the fold match
 			if start_indent_count == end_indent_count then
 
-				-- Check for open bracket or brace at the beginning of the second line
-				local second_line_first_char = vim.fn.getline(line_start + 1):gsub("^%s*", ""):sub(1, 1)
-				local second_line_indent_count = vim.fn.indent(line_start + 1)
-				if second_line_indent_count == start_indent_count and (second_line_first_char == "(" or second_line_first_char == "{") then
-					-- Include open bracket or brace in the fold text
-					start_text = start_text .. " " .. second_line_first_char
+				-- Check for open bracket or brace in other lines before the last, at the same indent level as the first line
+				for i = line_start + 1, line_end - 1 do
+					local middle_line_first_char = vim.fn.getline(i):match("%S")
+					local middle_line_indent_count = vim.fn.indent(i)
+					if middle_line_indent_count == start_indent_count and (middle_line_first_char == "(" or middle_line_first_char == "{") then
+						-- Include open bracket or brace in the fold text
+						start_text = start_text .. " " .. middle_line_first_char
+						break
+					end
 				end
 
 				-- If indentation matches, use both first and last lines on fold text
-				return indent_spaces .. "▶  " .. start_text .. " [+" .. line_count .. " lines] " .. end_text
+				-- return indent_spaces .. "▶  " .. start_text .. " [+" .. line_count .. " lines] " .. end_text
+				return indent_spaces .. start_text .. " [+" .. line_count .. " lines] " .. end_text
 			else
 				-- If indentation does not match, use only the text of the first line
-				return indent_spaces .. "▶  " .. start_text .. " [+" .. line_count .. " lines]"
+				-- return indent_spaces .. "▶  " .. start_text .. " [+" .. line_count .. " lines]"
+				return indent_spaces .. start_text .. " [+" .. line_count .. " lines]"
 			end
 		end
 
@@ -131,9 +137,19 @@ return {
 				--vim.bo.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
  			end
  		})
+
 		-- Global folding options
 		vim.opt.fillchars = { fold = " " }
 		vim.opt.foldlevelstart = 99
+
+		-- Save folds
+		vim.opt.viewoptions = { "folds" }
+		vim.api.nvim_create_autocmd("BufWritePost", { command = "silent! mkview" })
+		vim.api.nvim_create_autocmd("BufReadPost", { callback = function()
+			-- For whatever reason, two nested schedules are required for this to work
+			vim.schedule(function() vim.schedule(function() vim.cmd("silent! loadview") end) end)
+		end })
+
 	end
 }
 

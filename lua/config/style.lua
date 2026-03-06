@@ -14,8 +14,3 @@ vim.opt.expandtab = false
 -- Prevent python ftplugin from overriding tab settings
 vim.g.python_recommended_style = 0
 
--- Save folds and cursor position
-vim.opt.viewoptions = { "cursor", "curdir", "folds" }
-vim.api.nvim_create_autocmd("BufWinLeave", { command = "silent! mkview" })
-vim.api.nvim_create_autocmd("BufWinEnter", { command = "silent! loadview" })
-

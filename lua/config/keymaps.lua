@@ -11,7 +11,8 @@ vim.g.mapleader = " "
 local opts = { noremap = true, silent = true }
 
 -- Save all and run last command
-vim.keymap.set("n", "<LEADER>g", ":wall | !!<CR>", opts)
+vim.keymap.set("n", "<LEADER>c", ":wall | !!<CR>", opts)
+vim.keymap.set("n", "<LEADER>g", ":wall | !!<CR><CR>", opts)
 
 -- Toggle to last buffer with Tab
 vim.keymap.set("n", "<Tab>", ":buffer #<CR>", opts)

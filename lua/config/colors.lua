@@ -2,7 +2,7 @@
 vim.cmd("syntax off")
 
 -- Background colors
-color_background = { bg = "#100303" } -- Dark red
+color_background = { bg = "#090303" } -- Dark red
 color_highlight = { bg = "#3A0707" } -- Red
 color_search = { bg = "#400070" } -- Purple
 color_fold = { fg = "#00D0D0", bold = true, italic = true } -- Cyan
@@ -19,9 +19,10 @@ color_number = { fg = "#00FF00" } -- Light green
 color_preprocessor = { fg = "#FF00FF" } -- Magenta
 color_comment = { fg = "#707070" } -- Gray
 
--- Set syntax highlighting
+-- Set editor window colors
 vim.api.nvim_set_hl(0, "Normal", color_background)
 vim.api.nvim_set_hl(0, "Visual", color_highlight)
+vim.api.nvim_set_hl(0, "WinSeparator", color_comment)
 
 vim.api.nvim_set_hl(0, "StatusLine", color_highlight)
 vim.opt.laststatus = 3 -- Fix a single status bar
@@ -32,6 +33,7 @@ vim.api.nvim_set_hl(0, "CurSearch", color_search)
 vim.api.nvim_set_hl(0, "LineNr", color_var)
 vim.api.nvim_set_hl(0, "Folded", color_fold)
 
+-- Set syntax highlighting
 vim.api.nvim_set_hl(0, "@variable", color_var)
 vim.api.nvim_set_hl(0, "@variable.builtin", color_reserved)
 vim.api.nvim_set_hl(0, "@variable.parameter", { link = "@variable" })
