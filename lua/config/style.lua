@@ -5,6 +5,9 @@ vim.opt.shortmess:append("I")
 vim.opt.number = true
 vim.opt.relativenumber = true
 
+-- Always show at least 9 lines above and below the cursor
+vim.opt.scrolloff = 9
+
 -- Set TAB size and avoid being substituted by spaces
 vim.opt.tabstop = 4
 vim.opt.shiftwidth = 4
@@ -13,4 +16,7 @@ vim.opt.expandtab = false
 
 -- Prevent python ftplugin from overriding tab settings
 vim.g.python_recommended_style = 0
+
+-- Enable persistent undo memory
+vim.opt.undofile = true
 

@@ -24,6 +24,6 @@ return {
 		trailing_stiffness      = 0.4, -- Tail speed (0: no movement, 1: instantaneous)
 		damping                 = 1, -- Stop as soon as it reaches the target (no overshoot)
 		distance_stop_animating = 2, -- Stop animating when tail is within this distance (in characters) from the target
-	}
+	},
 }
 

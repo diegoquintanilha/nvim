@@ -6,6 +6,7 @@ color_background = { bg = "#090303" } -- Dark red
 color_highlight = { bg = "#3A0707" } -- Red
 color_search = { bg = "#400070" } -- Purple
 color_fold = { fg = "#00D0D0", bold = true, italic = true } -- Cyan
+color_completion_box = { bg = "#011B41" } -- Dark blue
 
 -- Syntax highlighting colors
 color_var = { fg = "#DDDDDD" } -- Light gray
@@ -33,6 +34,11 @@ vim.api.nvim_set_hl(0, "CurSearch", color_search)
 
 vim.api.nvim_set_hl(0, "LineNr", color_var)
 vim.api.nvim_set_hl(0, "Folded", color_fold)
+
+-- Set LSP suggestion box colors
+vim.api.nvim_set_hl(0, "Pmenu", color_completion_box)
+vim.api.nvim_set_hl(0, "PmenuSel", color_highlight)
+vim.api.nvim_set_hl(0, "CmpItemKind", color_comment)
 
 -- Set syntax highlighting
 vim.api.nvim_set_hl(0, "@variable", color_var)

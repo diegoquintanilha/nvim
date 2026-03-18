@@ -1,6 +1,12 @@
 return {
 	"lukas-reineke/indent-blankline.nvim",
 	main = "ibl",
-	opts = {},
+	opts = {
+		scope = {
+			-- Do not underline current scope
+			show_start = false,
+			show_end = false,
+		}
+	},
 }
 

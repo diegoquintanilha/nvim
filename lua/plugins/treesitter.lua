@@ -95,7 +95,6 @@ return {
 			end
 			if region_name then
 				-- If the region has an explicit name, the fold must simply reproduce it
-				-- return indent_spaces .. "▶  " .. region_name .. " [+" .. line_count .. " lines]"
 				return indent_spaces .. region_name .. " [+" .. line_count .. " lines]"
 			end
 
@@ -114,29 +113,27 @@ return {
 				end
 
 				-- If indentation matches, use both first and last lines on fold text
-				-- return indent_spaces .. "▶  " .. start_text .. " [+" .. line_count .. " lines] " .. end_text
 				return indent_spaces .. start_text .. " [+" .. line_count .. " lines] " .. end_text
 			else
 				-- If indentation does not match, use only the text of the first line
-				-- return indent_spaces .. "▶  " .. start_text .. " [+" .. line_count .. " lines]"
 				return indent_spaces .. start_text .. " [+" .. line_count .. " lines]"
 			end
 		end
 
- 		-- Create a callback to run everytime a new file opens
- 		vim.api.nvim_create_autocmd("FileType", {
- 			pattern = parsers, -- Only run the callback for files that have a parser installed
- 			callback = function()
+		-- Create a callback to run everytime a new file opens
+		vim.api.nvim_create_autocmd("FileType", {
+			pattern = parsers, -- Only run the callback for files that have a parser installed
+			callback = function()
 				-- Enable syntax highlighting (syntax highligting is enabled by default if Treesitter is running)
- 				vim.treesitter.start()
+				vim.treesitter.start()
 				-- Enable Treesitter folding
 				vim.wo.foldmethod = "expr"
 				vim.wo.foldexpr = "v:lua.get_fold_level(v:lnum)"
 				vim.wo.foldtext = "v:lua.get_fold_text()"
 				-- Enable Treesitter indentation
 				--vim.bo.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
- 			end
- 		})
+			end
+		})
 
 		-- Global folding options
 		vim.opt.fillchars = { fold = " " }
