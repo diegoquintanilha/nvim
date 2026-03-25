@@ -17,9 +17,6 @@ vim.keymap.set("n", "Q", "<NOP>", opts)
 vim.keymap.set("n", "<LEADER>c", ":wall | !!<CR>", opts)
 vim.keymap.set("n", "<LEADER>g", ":wall | !!<CR><CR>", opts)
 
--- Toggle to last buffer with Tab
-vim.keymap.set("n", "<Tab>", ":buffer #<CR>", opts)
-
 -- Movement in insert mode
 vim.keymap.set("i", "<C-h>", "<Left>",  opts)
 vim.keymap.set("i", "<C-j>", "<Down>",  opts)
