@@ -17,10 +17,19 @@ vim.keymap.set("n", "Q", "<NOP>", opts)
 vim.keymap.set("n", "<LEADER>c", ":wall | !!<CR>", opts)
 vim.keymap.set("n", "<LEADER>g", ":wall | !!<CR><CR>", opts)
 
+-- Exit insert mode in terminal with ESC
+vim.keymap.set("t", "<ESC>", "<C-\\><C-n>", opts)
+
+-- Movement between splits
+vim.keymap.set("n", "<LEADER>h", "<C-w>h", opts)
+vim.keymap.set("n", "<LEADER>j", "<C-w>j", opts)
+vim.keymap.set("n", "<LEADER>k", "<C-w>k", opts)
+vim.keymap.set("n", "<LEADER>l", "<C-w>l", opts)
+
 -- Movement in insert mode
-vim.keymap.set("i", "<C-h>", "<Left>",  opts)
-vim.keymap.set("i", "<C-j>", "<Down>",  opts)
-vim.keymap.set("i", "<C-k>", "<Up>",    opts)
+vim.keymap.set("i", "<C-h>", "<Left>" , opts)
+vim.keymap.set("i", "<C-j>", "<Down>" , opts)
+vim.keymap.set("i", "<C-k>", "<Up>"   , opts)
 vim.keymap.set("i", "<C-l>", "<Right>", opts)
 
 -- Move screen with cursor using Ctrl+J / Ctrl+K
