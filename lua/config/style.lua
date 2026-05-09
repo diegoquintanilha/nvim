@@ -6,17 +6,30 @@ vim.opt.number = true
 vim.opt.relativenumber = true
 
 -- Always show at least 9 lines above and below the cursor
-vim.opt.scrolloff = 9
+vim.opt.scrolloff = 5
 
--- Set TAB size and avoid being substituted by spaces
-vim.opt.tabstop = 4
-vim.opt.shiftwidth = 4
-vim.opt.softtabstop = 0
-vim.opt.expandtab = false
-
--- Prevent python ftplugin from overriding tab settings
-vim.g.python_recommended_style = 0
+-- Set a character for trailing whitespaces
+vim.opt.list = true
+vim.opt.listchars = {
+	tab = "  ",
+	trail = "•",
+}
 
 -- Enable persistent undo memory
 vim.opt.undofile = true
+
+-- Run the following commands everytime after opening any file
+-- This ensures that they are not overwritten by any language specific configs
+vim.api.nvim_create_autocmd("FileType", {
+	callback = function()
+		-- Set TAB size and avoid being substituted by spaces
+		vim.opt.tabstop = 4
+		vim.opt.shiftwidth = 4
+		vim.opt.softtabstop = 0
+		vim.opt.expandtab = false
+
+		-- Disable auto commenting on new line
+		vim.opt_local.formatoptions:remove({ "r", "o" })
+	end
+})
 

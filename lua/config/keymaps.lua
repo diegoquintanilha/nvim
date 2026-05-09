@@ -48,9 +48,19 @@ vim.keymap.set("x", "<C-d>", "<C-d>zz", opts)
 vim.keymap.set("n", "n", "nzvzz", opts)
 vim.keymap.set("n", "N", "Nzvzz", opts)
 
+-- Clear search result highlighting
+vim.keymap.set("n", "c/", ":nohlsearch<CR>", opts)
+
+-- Insert true indentation on new lines
+vim.keymap.set("i", "<CR>", "<CR> <BS>", opts)
+vim.keymap.set("n", "o", "o <BS>", opts)
+vim.keymap.set("n", "O", "O <BS>", opts)
+vim.keymap.set("n", "cc", "cc <BS>", opts)
+vim.keymap.set("x", "c", "c <BS>", opts)
+
 -- Add line below / above without leaving normal mode
-vim.keymap.set("n", "co", "m`o<ESC>``", opts)
-vim.keymap.set("n", "cO", "m`O<ESC>``", opts)
+vim.keymap.set("n", "co", "m`o <BS><ESC>``", opts)
+vim.keymap.set("n", "cO", "m`O <BS><ESC>``", opts)
 
 -- Keep cursor still when joining lines
 vim.keymap.set("n", "J", "m`J``", opts)
@@ -78,22 +88,24 @@ vim.keymap.set("n", "c(", "m`0f(i<CR><ESC>``", opts)
 vim.keymap.set("n", "c{", "m`0f{i<CR><ESC>``", opts)
 
 -- Create new code block in insert mode
-vim.keymap.set("i", "<C-b>", "<CR>(<CR>)<ESC>O", opts)
-vim.keymap.set("i", "<C-r>", "<CR>{<CR>}<ESC>O", opts)
+vim.keymap.set("i", "<C-b>", "<CR>(<CR>)<ESC>O <BS>", opts)
+vim.keymap.set("i", "<C-r>", "<CR>{<CR>}<ESC>O <BS>", opts)
 
 -- Surround selected text
-vim.keymap.set("x", "g(", "c()<ESC>P", opts)
-vim.keymap.set("x", "g[", "c[]<ESC>P", opts)
-vim.keymap.set("x", "g{", "c{}<ESC>P", opts)
-vim.keymap.set("x", "g<", "c<><ESC>P", opts)
-vim.keymap.set("x", "g'", "c''<ESC>P", opts)
-vim.keymap.set("x", 'g"', 'c""<ESC>P', opts)
+vim.keymap.set("x", "sb", "c()<ESC>P", opts)
+vim.keymap.set("x", "s(", "c()<ESC>P", opts)
+vim.keymap.set("x", "s[", "c[]<ESC>P", opts)
+vim.keymap.set("x", "s{", "c{}<ESC>P", opts)
+vim.keymap.set("x", "s<", "c<><ESC>P", opts)
+vim.keymap.set("x", "s'", "c''<ESC>P", opts)
+vim.keymap.set("x", 's"', 'c""<ESC>P', opts)
 
 -- Remove surrounding symbol
-vim.keymap.set("n", "dg(", "m`yi(va(p``", opts)
-vim.keymap.set("n", "dg[", "m`yi[va[p``", opts)
-vim.keymap.set("n", "dg{", "m`yi{va{p``", opts)
-vim.keymap.set("n", "dg<", "m`yi<va<p``", opts)
-vim.keymap.set("n", "dg'", "m`yi'va'p``", opts)
-vim.keymap.set("n", 'dg"', 'm`yi"va"p``', opts)
+vim.keymap.set("n", "dsb", "m`yi(``va(p``", opts)
+vim.keymap.set("n", "ds(", "m`yi(``va(p``", opts)
+vim.keymap.set("n", "ds[", "m`yi[``va[p``", opts)
+vim.keymap.set("n", "ds{", "m`yi{``va{p``", opts)
+vim.keymap.set("n", "ds<", "m`yi<``va<p``", opts)
+vim.keymap.set("n", "ds'", "m`yi'``va'p``", opts)
+vim.keymap.set("n", 'ds"', 'm`yi"``va"p``', opts)
 

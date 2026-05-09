@@ -18,7 +18,7 @@ return {
 		hide_target_hack = true,
 
 		-- Animation
-		time_interval           = 7, -- Animation time (ms)
+		time_interval           = 8, -- Animation time (ms)
 		delay_after_key         = 1, -- Delay before start moving (ms)
 		stiffness               = 1, -- The head goes instantly to the target
 		trailing_stiffness      = 0.4, -- Tail speed (0: no movement, 1: instantaneous)

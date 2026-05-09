@@ -34,6 +34,22 @@ return {
 		-- Install the above specified parsers
 		require("nvim-treesitter").install(parsers)
 
+		-- Helper function to check if the given position is inside a comment or a string
+		function _G.is_valid_context(row, col)
+			local ok, captures = pcall(vim.treesitter.get_captures_at_pos, 0, row - 1, col - 1)
+			if ok and captures then
+				for _, capture in ipairs(captures) do
+					local c = capture.capture
+					if c == "comment" or c:find("string") then
+						-- If Treesitter finds that the given position is inside a comment or a string, returns false
+						return false
+					end
+				end
+			end
+			-- Treesitter didn't find a comment or string around the given position, so the context is valid
+			return true
+		end
+		
 		-- Custom function to calculate fold level with custom folds
 		function _G.get_fold_level(lnum)
 			-- Get Treesitter fold level
@@ -52,26 +68,48 @@ return {
 				return "<" .. tostring(tonumber(fold) + 1)
 			end
 
-			-- Loop backwards from current line
+			-- Check if the current line is inside a custom fold and increment if needed
 			for i = #lines, 1, -1 do
+				-- Loop backwards from current line
 				-- Check each of the previous lines to see if the current line is inside a custom fold
 				local prev_line = lines[i]
 
 				if prev_line:find("^%s*#%s*region.*") or prev_line:find("^%s*#pragma%s+region.*") then
 					-- The current line is inside a custom fold
 					local char, num = fold:match("^([^%d]?)(%d*)$") -- Separate the number part
-					if num == "" then return fold end -- If there is no number, return base fold
-					return char .. tostring(tonumber(num) + 1) -- Increment the fold level
+					if num ~= "" then -- If there is a number
+						fold = char .. tostring(tonumber(num) + 1) -- Increment the fold level
+					end
+					break
 				elseif prev_line:find("^%s*#%s*endregion.*") or prev_line:find("^%s*#pragma%s+endregion.*") then
 					-- The current line is not inside a custom fold
-					return fold -- Return base fold
+					break -- Keep base fold
 				end
 			end
 
-			-- At the end of the loop, if no custom folds have been found, return the base Treesitter fold
+			-- Set every 'else' statement as a fold opener
+			local else_start = current_line:find("%f[%w_]else%f[^%w_]")
+			if else_start
+				and not current_line:find(";") -- Ignore when the block ends on the same line
+				and fold:find("^%d+$") -- Ignore when foldexpr is not a pure number
+			then
+				-- Ignore when 'else' is inside a comment or a string
+				if is_valid_context(lnum, else_start) then
+					fold = ">" .. tostring(tonumber(fold))
+				end
+			end
+			
 			return fold
 		end
 
+		-- Custom command to print fold level
+		vim.api.nvim_create_user_command("FoldLevel", function()
+			local line = vim.fn.line(".")
+			local level = vim.fn.foldlevel(line)
+			local expr = get_fold_level(line)
+			print("Line: " .. line .. " | foldlevel: " .. level .. " | foldexpr: " .. expr)
+		end, {})
+		
 		-- Custom function to generate fold text
 		function _G.get_fold_text()
 			-- Get start and end of the fold
@@ -134,7 +172,7 @@ return {
 				--vim.bo.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
 			end
 		})
-
+		
 		-- Global folding options
 		vim.opt.fillchars = { fold = " " }
 		vim.opt.foldlevelstart = 99
@@ -146,7 +184,6 @@ return {
 			-- For whatever reason, two nested schedules are required for this to work
 			vim.schedule(function() vim.schedule(function() vim.cmd("silent! loadview") end) end)
 		end })
-
 	end
 }
 
