@@ -8,6 +8,14 @@ vim.opt.relativenumber = true
 -- Always show at least 9 lines above and below the cursor
 vim.opt.scrolloff = 5
 
+-- Set terminal cursor appearence the same as the regular cursor
+vim.opt.guicursor =
+	"n-v-c-sm:block," ..
+	"i-ci-ve:ver25," ..
+	"r-cr-o:hor20," ..
+	"t:ver25-blinkon500-blinkoff500-TermCursor," ..
+	"a:SmearCursorHideable"
+
 -- Set a character for trailing whitespaces
 vim.opt.list = true
 vim.opt.listchars = {

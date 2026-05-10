@@ -13,9 +13,8 @@ local opts = { noremap = true, silent = true }
 -- Disable Q
 vim.keymap.set("n", "Q", "<NOP>", opts)
 
--- Save all and run last command
-vim.keymap.set("n", "<LEADER>c", ":wall | !!<CR>", opts)
-vim.keymap.set("n", "<LEADER>g", ":wall | !!<CR><CR>", opts)
+-- Go back to normal mode with Ctrl+C
+vim.keymap.set("i", "<C-c>", "<ESC>", opts)
 
 -- Exit insert mode in terminal with ESC
 vim.keymap.set("t", "<ESC>", "<C-\\><C-n>", opts)
@@ -27,10 +26,10 @@ vim.keymap.set("n", "<LEADER>k", "<C-w>k", opts)
 vim.keymap.set("n", "<LEADER>l", "<C-w>l", opts)
 
 -- Movement in insert mode
-vim.keymap.set("i", "<C-h>", "<Left>" , opts)
-vim.keymap.set("i", "<C-j>", "<Down>" , opts)
-vim.keymap.set("i", "<C-k>", "<Up>"   , opts)
-vim.keymap.set("i", "<C-l>", "<Right>", opts)
+vim.keymap.set("i", "<C-h>", "<LEFT>" , opts)
+vim.keymap.set("i", "<C-j>", "<DOWN>" , opts)
+vim.keymap.set("i", "<C-k>", "<UP>"   , opts)
+vim.keymap.set("i", "<C-l>", "<RIGHT>", opts)
 
 -- Move screen with cursor using Ctrl+J / Ctrl+K
 vim.keymap.set("n", "<C-j>", "j<C-e>", opts)
@@ -47,6 +46,10 @@ vim.keymap.set("x", "<C-d>", "<C-d>zz", opts)
 -- Keep cursor centered when browsing search results
 vim.keymap.set("n", "n", "nzvzz", opts)
 vim.keymap.set("n", "N", "Nzvzz", opts)
+
+-- Search and replace selected
+vim.keymap.set("x", "<C-h>", 'y:%s/<C-r><C-w>//g<LEFT><LEFT>', opts)
+vim.keymap.set("x", "<LEADER>h", 'y:%s/<C-r><C-w>//gc<LEFT><LEFT><LEFT>', opts)
 
 -- Clear search result highlighting
 vim.keymap.set("n", "c/", ":nohlsearch<CR>", opts)
@@ -74,7 +77,8 @@ vim.keymap.set("x", "<C-p>", '"_dP', opts)
 vim.keymap.set("n", "<C-p>", "p", opts) -- Alias for normal mode
 
 -- Alias for yanking to the system clipboard
-vim.keymap.set("n", "<LEADER>yy", '"+yy', opts)
+vim.keymap.set("n", "<LEADER>y", '"+y', opts)
+vim.keymap.set("n", "<LEADER>Y", '"+y$', opts)
 vim.keymap.set("x", "<LEADER>y", '"+y', opts)
 
 -- Alias for pasting from the system clipboard
