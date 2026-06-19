@@ -10,20 +10,11 @@ vim.g.mapleader = " "
 -- Standard options for all remaps
 local opts = { noremap = true, silent = true }
 
--- Disable Q
-vim.keymap.set("n", "Q", "<NOP>", opts)
-
 -- Go back to normal mode with Ctrl+C
 vim.keymap.set("i", "<C-c>", "<ESC>", opts)
 
 -- Exit insert mode in terminal with ESC
 vim.keymap.set("t", "<ESC>", "<C-\\><C-n>", opts)
-
--- Movement between splits
-vim.keymap.set("n", "<LEADER>h", "<C-w>h", opts)
-vim.keymap.set("n", "<LEADER>j", "<C-w>j", opts)
-vim.keymap.set("n", "<LEADER>k", "<C-w>k", opts)
-vim.keymap.set("n", "<LEADER>l", "<C-w>l", opts)
 
 -- Movement in insert mode
 vim.keymap.set("i", "<C-h>", "<LEFT>" , opts)
@@ -49,7 +40,7 @@ vim.keymap.set("n", "N", "Nzvzz", opts)
 
 -- Search and replace selected
 vim.keymap.set("x", "<C-h>", 'y:%s/<C-r><C-w>//g<LEFT><LEFT>', opts)
-vim.keymap.set("x", "<LEADER>h", 'y:%s/<C-r><C-w>//gc<LEFT><LEFT><LEFT>', opts)
+vim.keymap.set("x", "<LEADER>h", 'y:%s/<C-r><C-w>//gc<LEFT><LEFT><LEFT>', opts) -- Confirm each replacement
 
 -- Clear search result highlighting
 vim.keymap.set("n", "c/", ":nohlsearch<CR>", opts)
@@ -72,7 +63,7 @@ vim.keymap.set("n", "J", "m`J``", opts)
 vim.keymap.set("x", "J", ":m '>+1<CR>gv=gv", opts)
 vim.keymap.set("x", "K", ":m '<-2<CR>gv=gv", opts)
 
--- Paste over selection without overwriting buffer
+-- Paste over selection without overwriting buffer with Ctrl+P
 vim.keymap.set("x", "<C-p>", '"_dP', opts)
 vim.keymap.set("n", "<C-p>", "p", opts) -- Alias for normal mode
 
@@ -80,6 +71,11 @@ vim.keymap.set("n", "<C-p>", "p", opts) -- Alias for normal mode
 vim.keymap.set("n", "<LEADER>y", '"+y', opts)
 vim.keymap.set("n", "<LEADER>Y", '"+y$', opts)
 vim.keymap.set("x", "<LEADER>y", '"+y', opts)
+
+-- Alias for deleting to the system clipboard
+vim.keymap.set("n", "<LEADER>d", '"+d', opts)
+vim.keymap.set("n", "<LEADER>D", '"+d$', opts)
+vim.keymap.set("x", "<LEADER>d", '"+d', opts)
 
 -- Alias for pasting from the system clipboard
 vim.keymap.set("n", "<LEADER>p", '"+p', opts)

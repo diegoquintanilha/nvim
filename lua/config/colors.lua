@@ -2,10 +2,11 @@
 vim.cmd("syntax off")
 
 -- Background colors
-color_background = { bg = "#090303" } -- Dark red
+color_background = { bg = "#0A0303" } -- Dark red
+-- color_background = { bg = "#1A0303" } -- Dark red (for darker monitors)
 color_highlight = { bg = "#3A0707" } -- Red
 color_search = { bg = "#400070" } -- Purple
-color_fold = { fg = "#00D0D0", bold = true, italic = true } -- Cyan
+color_fold = { fg = "#00D0D0", bold = true } -- Cyan
 color_completion_box = { bg = "#011B41" } -- Dark blue
 
 -- Syntax highlighting colors
@@ -34,6 +35,9 @@ vim.api.nvim_set_hl(0, "CurSearch", color_search)
 
 vim.api.nvim_set_hl(0, "LineNr", color_var)
 vim.api.nvim_set_hl(0, "Folded", color_fold)
+
+-- Set quickfix list colors
+vim.api.nvim_set_hl(0, "QuickFixLine", color_highlight)
 
 -- Set LSP suggestion box colors
 vim.api.nvim_set_hl(0, "Pmenu", color_completion_box)

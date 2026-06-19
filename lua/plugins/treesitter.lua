@@ -143,7 +143,14 @@ return {
 				for i = line_start + 1, line_end - 1 do
 					local middle_line_first_char = vim.fn.getline(i):match("%S")
 					local middle_line_indent_count = vim.fn.indent(i)
-					if middle_line_indent_count == start_indent_count and (middle_line_first_char == "(" or middle_line_first_char == "{") then
+					-- Check whether the middle line starts with a bracket or brace that is closed on the end line at the same indentation level
+					if middle_line_indent_count == start_indent_count
+						and (
+							(middle_line_first_char == "(" and end_text:find(")"))
+							or
+							(middle_line_first_char == "{" and end_text:find("}"))
+						)
+					then
 						-- Include open bracket or brace in the fold text
 						start_text = start_text .. " " .. middle_line_first_char
 						break
@@ -182,7 +189,10 @@ return {
 		vim.api.nvim_create_autocmd("BufWritePost", { command = "silent! mkview" })
 		vim.api.nvim_create_autocmd("BufReadPost", { callback = function()
 			-- For whatever reason, two nested schedules are required for this to work
-			vim.schedule(function() vim.schedule(function() vim.cmd("silent! loadview") end) end)
+			vim.schedule(function() vim.schedule(function()
+				vim.cmd("silent! loadview")
+				vim.api.nvim_win_set_cursor(0, {1, 0}) -- Reset cursor position after applying folds
+			end) end)
 		end })
 	end
 }

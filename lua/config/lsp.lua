@@ -41,3 +41,14 @@ vim.opt.pumheight = 5
 -- Disable LSP diagnostics
 vim.diagnostic.enable(false)
 
+-- Disable LSP syntax highlighting
+-- TODO: for newer versions, test vim.lsp.semantic_tokens.enable(false)
+vim.api.nvim_create_autocmd("LspAttach", {
+	callback = function(args)
+		local client = vim.lsp.get_client_by_id(args.data.client_id)
+		if client then
+			client.server_capabilities.semanticTokensProvider = nil
+		end
+	end,
+})
+
