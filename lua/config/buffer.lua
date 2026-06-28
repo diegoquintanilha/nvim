@@ -32,9 +32,12 @@ local function auto_save_buffer(buf)
 		end
 	end
 
-	-- Skip buffers that don't show up in :ls
-	if vim.fn.buflisted(buf) ~= 1 then
-		return
+	-- Only save buffers that represent real editable text files
+	if vim.fn.buflisted(buf) ~= 1 -- Skip buffers that don't show up in :ls
+		or vim.bo[buf].buftype ~= "" -- Skip buffers with special types (terminal, quickfix, etc)
+		or vim.api.nvim_buf_get_name(buf) == "" -- Skip buffers with no name
+	then
+			return
 	end
 
 	-- Check slot availability according to the priority

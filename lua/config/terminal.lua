@@ -7,6 +7,9 @@ local stored_commands = {
 }
 local command_slot_priority = { "v", "c", "x", "z" }
 
+-- Variable that stores the output of the last terminal command
+local output_last_cmd = nil
+
 -- Store a command into the given slot
 local function store_command(slot)
 	stored_commands[slot] = vim.fn.input("Store command on slot '".. slot .."': ", stored_commands[slot] or "")
@@ -57,6 +60,56 @@ vim.api.nvim_create_user_command("CmdSlots", function()
 	vim.api.nvim_out_write(table.concat(lines, "\n") .. "\n")
 end, {})
 
+-- Parse the given lines as compiler errors and populate the quickfix list
+local function lines_to_quickfix(lines)
+	-- Remove empty lines
+	clean = {}
+	for _, line in ipairs(lines) do
+		if line ~= "" then
+			table.insert(clean, line)
+		end
+	end
+	
+	-- Parse the contents of the terminal as compiler errors
+	local efm = table.concat({
+		"%f:%l:%c: %trror: %m",
+		"%f:%l:%c: %tarning: %m",
+		"%f:%l: %trror: %m",
+		"%f:%l: %tarning: %m",
+	}, ",")
+	
+	-- Add the lines to the quickfix list
+	vim.fn.setqflist({}, " ", {
+		title = "Compilation errors",
+		lines = clean,
+		efm = efm,
+	})
+	
+	-- If there were any successfully parsed compiler errors, return true
+	for _, info in ipairs(vim.fn.getqflist()) do
+		if info.valid == 1 then
+			return true
+		end
+	end
+	
+	-- Otherwise, clear the quickfix list and return false
+	vim.fn.setqflist({})
+	return false
+end
+
+-- Open the quickfix list and navigate to the first error
+local function qf_list_go_to_error()
+	-- Open the quickfix list
+	vim.cmd("copen")
+	-- Open the file of the first error in the list, in case it is not opened
+	vim.cmd("cc")
+	-- For whatever reason, two nested schedules are required for this to work
+	vim.schedule(function() vim.schedule(function()
+		vim.cmd("cc") -- Move the cursor to the first error
+		vim.cmd("normal! zz") -- Center the screen
+	end) end)
+end
+
 -- Run the command stored on the given slot
 local function run_command(slot)
 	-- Check if there is a valid command stored in the given slot
@@ -65,7 +118,7 @@ local function run_command(slot)
 		return
 	end
 	
-	print("Running command: " .. stored_commands[slot])
+	-- TODO: save cursor position here and restore after exiting the terminal
 	
 	-- Close the quickfix list, if it is open
 	vim.cmd("cclose")
@@ -75,72 +128,48 @@ local function run_command(slot)
 	vim.cmd("enew")
 	local term_buf = vim.api.nvim_get_current_buf()
 	
+	print("Running command: " .. stored_commands[slot])
+	
 	-- Transform the new buffer into a terminal window and run the stored command
 	vim.fn.termopen(stored_commands[slot], {
-		on_exit = function()
-			-- If the command ran successfully, just exit
+		on_exit = function(_, code)
+			-- Get the contents of the terminal
+			output_last_cmd = vim.api.nvim_buf_get_lines(term_buf, 0, -1, false)
+			
+			-- If the command ran successfully, just print the exit code
 			if code == 0 then
-				vim.api.nvim_buf_delete(term_buf, { force = true })
+				-- This 20 ms delay is a hack to avoid being overwritten by the default '-- TERMINAL --' text
+				vim.defer_fn(function()
+					if output_last_cmd then
+						print("Command exited with code 0 (:CmdOut to see output)")
+					else
+						print("Command exited with code 0")
+					end
+				end, 20)
 				return
 			end
-			
-			-- If the command did not return 0, get the contents of the terminal
-			local lines = vim.api.nvim_buf_get_lines(term_buf, 0, -1, false)
-			
-			-- Remove empty lines
-			clean = {}
-			for _, line in ipairs(lines) do
-				if line ~= "" then
-					table.insert(clean, line)
-				end
-			end
-			
-			-- Parse the contents of the terminal as compiler errors
-			local efm = table.concat({
-				"%f:%l:%c: %trror: %m",
-				"%f:%l:%c: %tarning: %m",
-				"%f:%l: %trror: %m",
-				"%f:%l: %tarning: %m",
-			}, ",")
-			
-			-- Add the lines to the quickfix list
-			vim.fn.setqflist({}, " ", {
-				title = "Compilation errors",
-				lines = clean,
-				efm = efm,
-			})
-			
-			-- Check if there were any successfully parsed compiler errors
-			local valid = false
-			for _, info in ipairs(vim.fn.getqflist()) do
-				if info.valid == 1 then
-					valid = true
-					break
-				end
-			end
-			
-			-- If no lines are compiler errors, clear the quickfix list and exit
-			if not valid then
-				vim.fn.setqflist({})
-				vim.api.nvim_buf_delete(term_buf, { force = true })
-				return
-			end
+			-- Otherwise try parsing the contents of the terminal as errors for the quickfix list
 
-			-- If there was at least one compiler error, close the terminal and open the quickfix list
-			vim.api.nvim_buf_delete(term_buf, { force = true })
-			vim.cmd("copen")
+			-- Try populating the quickfix list, parsing the terminal output as compiler errors
+			local valid = lines_to_quickfix(output_last_cmd)
 			
-			-- Open the file of the first error in the list, in case it is not opened
-			vim.cmd("cc")
+			-- Print the exit code
+			-- This 20 ms delay is a hack to avoid being overwritten by the default '-- TERMINAL --' text
+			vim.defer_fn(function()
+				if not valid and output_last_cmd then
+					vim.notify("Command exited with code ".. code .. " (:CmdOut to see output)", vim.log.levels.ERROR)
+				else
+					vim.notify("Command exited with code ".. code, vim.log.levels.ERROR)
+				end
+			end, 20)
 			
-			-- For whatever reason, two nested schedules are required for this to work
-			vim.schedule(function() vim.schedule(function()
-				vim.cmd("cc") -- Move the cursor to the first error
-				vim.cmd("normal! zz") -- Center the screen
-			end) end)
+			-- If there was at least one compiler error, open the quickfix list and go to the first error
+			if valid then
+				qf_list_go_to_error()
+			end
 		end
 	})
-
+	
 	vim.cmd("startinsert")
 end
 
@@ -182,27 +211,58 @@ function _G.QuickfixListText(qf)
 end
 vim.o.quickfixtextfunc = "v:lua.QuickfixListText"
 
+-- Create user command to print the output of the last terminal command
+vim.api.nvim_create_user_command("CmdOut", function()
+	if output_last_cmd then
+		print("Output of last terminal command:\n" .. table.concat(output_last_cmd, "\n"))
+	else
+		vim.notify("No terminal output available.", vim.log.levels.ERROR)
+	end
+end, {})
+
 -- Run command in z, x, c or v
 vim.keymap.set("n", "<LEADER>z", function() run_command("z") end)
 vim.keymap.set("n", "<LEADER>x", function() run_command("x") end)
 vim.keymap.set("n", "<LEADER>c", function() run_command("c") end)
 vim.keymap.set("n", "<LEADER>v", function() run_command("v") end)
 
+-- Parse the selected lines as compiler errors and put them into the quickfix list
+vim.keymap.set("x", "<LEADER>q", function()
+	-- Exit visual mode
+	vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<ESC>", true, false, true), "x", false)
+	
+	-- Get last selected lines
+	local selection_start = vim.fn.line("'<") - 1
+	local selection_end = vim.fn.line("'>")
+	local lines = vim.api.nvim_buf_get_lines(0, selection_start, selection_end, false)
+	
+	-- Try populating the quickfix list, parsing the current slection as compiler errors
+	local valid = lines_to_quickfix(lines)
+	
+	-- If there was at least one compiler error, open the quickfix list and go to the first error
+	if valid then
+		qf_list_go_to_error()
+	else
+		vim.notify("The current selection contains no compiler errors", vim.log.levels.ERROR)
+	end
+end)
+
 -- Standard remap options
 local opts = { noremap = true, silent = true }
 
 -- Navigate the quickfix list with Ctrl+H and Ctrl+L
-vim.keymap.set("n", "<C-h>", ":cprev<CR>", opts)
-vim.keymap.set("n", "<C-l>", ":cnext<CR>", opts)
+vim.keymap.set("n", "<C-h>", ":cprev<CR>zz", opts)
+vim.keymap.set("n", "<C-l>", ":cnext<CR>zz", opts)
 
 -- Open a new terminal window with Q
 vim.keymap.set("n", "Q", ":term<CR>i", opts)
 
--- When exiting from the terminal, close the buffer instantly
+-- When the terminal exits, close the buffer instantly
 vim.api.nvim_create_autocmd("TermClose", {
 	callback = function(args)
 		-- Two nested schedules are required to guarantee that this runs after the 'on_exit' callback
 		vim.schedule(function() vim.schedule(function()
+			-- If buffer still exists, close it
 			if vim.api.nvim_buf_is_valid(args.buf) then
 				vim.api.nvim_buf_delete(args.buf, { force = true })
 			end

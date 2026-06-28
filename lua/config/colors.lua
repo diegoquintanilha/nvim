@@ -11,7 +11,7 @@ color_completion_box = { bg = "#011B41" } -- Dark blue
 
 -- Syntax highlighting colors
 color_var = { fg = "#DDDDDD" } -- Light gray
-color_func = { fg = "#FF6020" } -- Orange
+color_func = { fg = "#FF9050" } -- Orange
 color_type = { fg = "#005EFF", bold = true } -- Blue
 color_reserved = { fg = "#FF0000", italic = true } -- Red
 color_operator = { fg = "#DDDD00" } -- Yellow
