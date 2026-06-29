@@ -28,7 +28,7 @@ vim.api.nvim_create_user_command("Cmd", function(opts)
 				return
 			end
 		end
-		vim.notify("Error: No free command slot. Select a specific slot with ':cmd [v|c|x|z]'", vim.log.levels.ERROR)
+		vim.notify("Error: No free command slot. Select a specific slot with ':Cmd [v|c|x|z]'", vim.log.levels.ERROR)
 		return
 	end
 	

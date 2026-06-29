@@ -5,8 +5,8 @@ vim.opt.shortmess:append("I")
 vim.opt.number = true
 vim.opt.relativenumber = true
 
--- Always show at least 9 lines above and below the cursor
-vim.opt.scrolloff = 5
+-- Always show at least 6 lines above and below the cursor
+vim.opt.scrolloff = 6
 
 -- Set terminal cursor appearence the same as the regular cursor
 vim.opt.guicursor =
