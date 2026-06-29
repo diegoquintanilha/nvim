@@ -2,9 +2,10 @@
 vim.cmd("syntax off")
 
 -- Background colors
-color_background = { bg = "#0A0303" } -- Dark red
--- color_background = { bg = "#1A0303" } -- Dark red (for darker monitors)
-color_highlight = { bg = "#3A0707" } -- Red
+-- color_background = { bg = "#0A0303" } -- Dark red
+-- color_highlight = { bg = "#3A0707" } -- Red
+color_background = { bg = "#1A0303" } -- Dark red (for darker monitors)
+color_highlight = { bg = "#550707" } -- Red (for darker monitors)
 color_search = { bg = "#400070" } -- Purple
 color_fold = { fg = "#00D0D0", bold = true } -- Cyan
 color_completion_box = { bg = "#011B41" } -- Dark blue
