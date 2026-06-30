@@ -37,7 +37,7 @@ local function auto_save_buffer(buf)
 		or vim.bo[buf].buftype ~= "" -- Skip buffers with special types (terminal, quickfix, etc)
 		or vim.api.nvim_buf_get_name(buf) == "" -- Skip buffers with no name
 	then
-			return
+		return
 	end
 
 	-- Check slot availability according to the priority

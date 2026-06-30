@@ -5,6 +5,17 @@ vim.opt.shortmess:append("I")
 vim.opt.number = true
 vim.opt.relativenumber = true
 
+-- Force enable line numbers in terminal buffers
+vim.api.nvim_create_autocmd("TermOpen", {
+	callback = function()
+		vim.opt_local.number = true
+		vim.opt_local.relativenumber = true
+	end,
+})
+
+-- Force enable line numbers in folder buffers
+vim.g.netrw_bufsettings = 'noma nomod nu rnu nobl nowrap ro'
+
 -- Always show at least 6 lines above and below the cursor
 vim.opt.scrolloff = 6
 

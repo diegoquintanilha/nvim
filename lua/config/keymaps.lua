@@ -13,8 +13,14 @@ local opts = { noremap = true, silent = true }
 -- Go back to normal mode with Ctrl+C
 vim.keymap.set("i", "<C-c>", "<ESC>", opts)
 
+-- Open a new terminal window with Q
+vim.keymap.set("n", "Q", ":term<CR>i", opts)
+
 -- Exit insert mode in terminal with ESC
 vim.keymap.set("t", "<ESC>", "<C-\\><C-n>", opts)
+
+-- Fold all first level folds
+vim.keymap.set("n", "zg", ":%foldclose<CR>", opts)
 
 -- Movement in insert mode
 vim.keymap.set("i", "<C-h>", "<LEFT>" , opts)
@@ -33,6 +39,10 @@ vim.keymap.set("n", "<C-u>", "<C-u>zz", opts)
 vim.keymap.set("n", "<C-d>", "<C-d>zz", opts)
 vim.keymap.set("x", "<C-u>", "<C-u>zz", opts)
 vim.keymap.set("x", "<C-d>", "<C-d>zz", opts)
+
+-- Navigate the quickfix list with Ctrl+H and Ctrl+L
+vim.keymap.set("n", "<C-h>", ":cprev<CR>zz", opts)
+vim.keymap.set("n", "<C-l>", ":cnext<CR>zz", opts)
 
 -- Keep cursor centered when browsing search results
 vim.keymap.set("n", "n", "nzvzz", opts)
@@ -108,4 +118,8 @@ vim.keymap.set("n", "ds{", "m`yi{``va{p``", opts)
 vim.keymap.set("n", "ds<", "m`yi<``va<p``", opts)
 vim.keymap.set("n", "ds'", "m`yi'``va'p``", opts)
 vim.keymap.set("n", 'ds"', 'm`yi"``va"p``', opts)
+
+-- Change inside/around double quotes
+vim.keymap.set("n", "ciq", 'ci"', opts)
+vim.keymap.set("n", "caq", 'ca"', opts)
 

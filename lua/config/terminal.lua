@@ -247,16 +247,6 @@ vim.keymap.set("x", "<LEADER>q", function()
 	end
 end)
 
--- Standard remap options
-local opts = { noremap = true, silent = true }
-
--- Navigate the quickfix list with Ctrl+H and Ctrl+L
-vim.keymap.set("n", "<C-h>", ":cprev<CR>zz", opts)
-vim.keymap.set("n", "<C-l>", ":cnext<CR>zz", opts)
-
--- Open a new terminal window with Q
-vim.keymap.set("n", "Q", ":term<CR>i", opts)
-
 -- When the terminal exits, close the buffer instantly
 vim.api.nvim_create_autocmd("TermClose", {
 	callback = function(args)
