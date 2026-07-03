@@ -196,13 +196,13 @@ function _G.QuickfixListText(qf)
 			
 			-- Get error type
 			if info.type == "e" then
-				table.insert(lines, string.format("%s:%d:%d: error: %s", filename, info.lnum, info.col, info.text or ""))
+				table.insert(lines, string.format("File %s | line %d | col %d | ERROR: %s", filename, info.lnum, info.col, info.text or ""))
 			elseif info.type == "w" then
-				table.insert(lines, string.format("%s:%d:%d: warning: %s", filename, info.lnum, info.col, info.text or ""))
+				table.insert(lines, string.format("File %s | line %d | col %d | WARNING: %s", filename, info.lnum, info.col, info.text or ""))
 			elseif info.type == "" then
-				table.insert(lines, string.format("%s:%d:%d: %s", filename, info.lnum, info.col, info.text or ""))
+				table.insert(lines, string.format("File %s | line %d | col %d | []: %s", filename, info.lnum, info.col, info.text or ""))
 			else
-				table.insert(lines, string.format("%s:%d:%d: %s: %s", info.type, filename, info.lnum, info.col, info.text or ""))
+				table.insert(lines, string.format("File %s | line %d | col %d | %s: %s", info.type, filename, info.lnum, info.col, info.text or ""))
 			end
 		end
 	end

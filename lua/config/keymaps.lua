@@ -34,6 +34,18 @@ vim.keymap.set("n", "<C-k>", "k<C-y>", opts)
 vim.keymap.set("x", "<C-j>", "j<C-e>", opts)
 vim.keymap.set("x", "<C-k>", "k<C-y>", opts)
 
+-- Movement between splits
+vim.keymap.set("n", "<LEADER>h", "<C-w>h", opts)
+vim.keymap.set("n", "<LEADER>j", "<C-w>j", opts)
+vim.keymap.set("n", "<LEADER>k", "<C-w>k", opts)
+vim.keymap.set("n", "<LEADER>l", "<C-w>l", opts)
+
+-- Maximize current buffer
+vim.keymap.set("n", "<LEADER>o", "<C-w>o", opts)
+
+-- Toggle to last buffer with Tab
+vim.keymap.set("n", "<TAB>", ":buffer #<CR>", opts)
+
 -- Keep cursor centered with Ctrl+U / Ctrl+D
 vim.keymap.set("n", "<C-u>", "<C-u>zz", opts)
 vim.keymap.set("n", "<C-d>", "<C-d>zz", opts)
@@ -119,7 +131,9 @@ vim.keymap.set("n", "ds<", "m`yi<``va<p``", opts)
 vim.keymap.set("n", "ds'", "m`yi'``va'p``", opts)
 vim.keymap.set("n", 'ds"', 'm`yi"``va"p``', opts)
 
--- Change inside/around double quotes
-vim.keymap.set("n", "ciq", 'ci"', opts)
-vim.keymap.set("n", "caq", 'ca"', opts)
+-- Use Q as motion to edit inside/around double quotes
+vim.keymap.set("o", "iq", 'i"', opts)
+vim.keymap.set("o", "aq", 'a"', opts)
+vim.keymap.set("x", "iq", 'i"', opts)
+vim.keymap.set("x", "aq", 'a"', opts)
 

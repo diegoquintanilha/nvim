@@ -1,3 +1,8 @@
+-- Create command to open config dir
+vim.api.nvim_create_user_command("Config", function()
+	vim.cmd.edit(vim.fn.fnamemodify(vim.env.MYVIMRC, ":h"))
+end, {})
+
 -- Clear startup screen
 vim.opt.shortmess:append("I")
 

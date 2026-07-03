@@ -19,6 +19,7 @@ local function go_to_buffer(slot)
 	if buf and vim.api.nvim_buf_is_valid(buf) then
 		vim.api.nvim_set_current_buf(buf)
 	else
+		stored_buffers[slot] = nil -- In case it is storing an old, invalid buffer
 		vim.notify("No valid buffer in slot '" .. slot .. "'", vim.log.levels.ERROR)
 	end
 end
@@ -80,6 +81,7 @@ vim.api.nvim_create_user_command("BufferSlots", function()
 
 			table.insert(lines, string.format("%s -> b%d %s", slot, buf, name))
 		else
+			stored_buffers[slot] = nil -- In case it is storing an old, invalid buffer
 			table.insert(lines, string.format("%s -> [empty]", slot))
 		end
 	end
@@ -98,19 +100,4 @@ vim.keymap.set("n", "<LEADER>q", function() go_to_buffer("q") end)
 vim.keymap.set("n", "<LEADER>w", function() go_to_buffer("w") end)
 vim.keymap.set("n", "<LEADER>e", function() go_to_buffer("e") end)
 vim.keymap.set("n", "<LEADER>r", function() go_to_buffer("r") end)
-
--- Standard remap options
-local opts = { noremap = true, silent = true }
-
--- Movement between splits
-vim.keymap.set("n", "<LEADER>h", "<C-w>h", opts)
-vim.keymap.set("n", "<LEADER>j", "<C-w>j", opts)
-vim.keymap.set("n", "<LEADER>k", "<C-w>k", opts)
-vim.keymap.set("n", "<LEADER>l", "<C-w>l", opts)
-
--- Maximize current buffer
-vim.keymap.set("n", "<LEADER>o", "<C-w>o", opts)
-
--- Toggle to last buffer with Tab
-vim.keymap.set("n", "<TAB>", ":buffer #<CR>", opts)
 

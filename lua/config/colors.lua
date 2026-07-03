@@ -1,10 +1,10 @@
 -- Table that stores all the colors for the color scheme and syntax highlight groups
 _G.colors = {
 	-- Background colors
-	-- background     = "#0A0303", -- Dark red
-	-- highlight      = "#3A0707", -- Red
-	background     = "#200505", -- Dark red (for darker monitors)
-	highlight      = "#600808", -- Red (for darker monitors)
+	background     = "#0A0303", -- Dark red
+	highlight      = "#3A0707", -- Red
+	-- background     = "#200505", -- Dark red (for darker monitors)
+	-- highlight      = "#600808", -- Red (for darker monitors)
 	search         = "#400070", -- Purple
 	completion_box = "#011B41", -- Dark blue
 	fold           = "#00D0D0", -- Cyan
@@ -151,15 +151,20 @@ end
 vim.api.nvim_create_user_command("Color", function(opts)
 	local args = opts.fargs
 
-	-- If called with no arguments, print all current colors
-	if #args == 0 then
+	if #args == 0 then -- Print all current colors
 		local lines = {}
 		for group, color in pairs(colors) do
 			table.insert(lines, group .. ": " .. color)
 		end
 		print(table.concat(lines, "\n"))
-	-- If called with 2 arguments, change the color of a given group
-	elseif #args == 2 then
+	elseif #args == 1 then -- Print the color of the given group
+		local group = args[1]
+		if not colors[group] then
+			vim.notify("Error: '" .. group .. "' is not a valid syntax group", vim.log.levels.ERROR)
+			return
+		end
+		print(colors[group])
+	else -- Change the color of the given group
 		local group = args[1]
 		local color = args[2]
 		if not colors[group] then
@@ -173,10 +178,8 @@ vim.api.nvim_create_user_command("Color", function(opts)
 		-- Assign color to group and apply
 		colors[group] = color
 		apply_colors()
-	else
-		vim.notify("Error: the ':Color' command accepts either 0 or 2 arguments", vim.log.levels.ERROR)
 	end
-end, { nargs = "*", })
+end, { nargs = "*" })
 
 -- Disable legacy regex highlighting globally
 vim.cmd("syntax off")
