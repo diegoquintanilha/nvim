@@ -1,3 +1,4 @@
+require("config.neovide")
 require("config.style")
 require("config.keymaps")
 require("config.terminal")

@@ -1,10 +1,11 @@
 return {
 	"sphamba/smear-cursor.nvim",
+	cond = not vim.g.neovide,
 	opts = {
 		-- Do not smear cursor on short movements
 		min_horizontal_distance_smear = 1,
 		min_vertical_distance_smear = 1,
-		
+
 		-- Do not smear cursor in insert mode
 		smear_insert_mode = false,
 
