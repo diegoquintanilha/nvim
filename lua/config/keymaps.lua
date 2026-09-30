@@ -44,7 +44,7 @@ vim.keymap.set("n", "<LEADER>l", "<C-w>l", opts)
 vim.keymap.set("n", "<LEADER>o", "<C-w>o", opts)
 
 -- Toggle to last buffer with Tab
-vim.keymap.set("n", "<TAB>", ":buffer #<CR>", opts)
+vim.keymap.set("n", "<TAB>", ":buffer #<CR>zz", opts)
 
 -- Keep cursor centered with Ctrl+U / Ctrl+D
 vim.keymap.set("n", "<C-u>", "<C-u>zz", opts)
@@ -113,6 +113,9 @@ vim.keymap.set("n", "c{", "m`0f{i<CR><ESC>``", opts)
 vim.keymap.set("i", "<C-b>", "<CR>(<CR>)<ESC>O <BS>", opts)
 vim.keymap.set("i", "<C-r>", "<CR>{<CR>}<ESC>O <BS>", opts)
 
+-- Create for loop
+vim.keymap.set("i", "<C-f>", "for (u32 i = 0; i < ; ++i)<CR>{<CR>}<ESC>O <BS><ESC>2k$F;i", opts)
+
 -- Surround selected text
 vim.keymap.set("x", "sb", "c()<ESC>P", opts)
 vim.keymap.set("x", "s(", "c()<ESC>P", opts)
@@ -121,6 +124,7 @@ vim.keymap.set("x", "s{", "c{}<ESC>P", opts)
 vim.keymap.set("x", "s<", "c<><ESC>P", opts)
 vim.keymap.set("x", "s'", "c''<ESC>P", opts)
 vim.keymap.set("x", 's"', 'c""<ESC>P', opts)
+vim.keymap.set("x", "sq", 'c""<ESC>P', opts)
 
 -- Remove surrounding symbol
 vim.keymap.set("n", "dsb", "m`yi(``va(p``", opts)
@@ -130,6 +134,7 @@ vim.keymap.set("n", "ds{", "m`yi{``va{p``", opts)
 vim.keymap.set("n", "ds<", "m`yi<``va<p``", opts)
 vim.keymap.set("n", "ds'", "m`yi'``va'p``", opts)
 vim.keymap.set("n", 'ds"', 'm`yi"``va"p``', opts)
+vim.keymap.set("n", "dsq", 'm`yi"``va"p``', opts)
 
 -- Use Q as motion to edit inside/around double quotes
 vim.keymap.set("o", "iq", 'i"', opts)

@@ -18,6 +18,7 @@ local function go_to_buffer(slot)
 	local buf = stored_buffers[slot]
 	if buf and vim.api.nvim_buf_is_valid(buf) then
 		vim.api.nvim_set_current_buf(buf)
+		vim.cmd("normal! zz")
 	else
 		stored_buffers[slot] = nil -- In case it is storing an old, invalid buffer
 		vim.notify("No valid buffer in slot '" .. slot .. "'", vim.log.levels.ERROR)
