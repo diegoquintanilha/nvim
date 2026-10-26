@@ -13,12 +13,6 @@ local opts = { noremap = true, silent = true }
 -- Go back to normal mode with Ctrl+C
 vim.keymap.set("i", "<C-c>", "<ESC>", opts)
 
--- Open a new terminal window with Q
-vim.keymap.set("n", "Q", ":term<CR>i", opts)
-
--- Exit insert mode in terminal with ESC
-vim.keymap.set("t", "<ESC>", "<C-\\><C-n>", opts)
-
 -- Fold all first level folds
 vim.keymap.set("n", "zg", ":%foldclose<CR>", opts)
 
