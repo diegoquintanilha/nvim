@@ -61,6 +61,13 @@ vim.keymap.set("x", "<LEADER>h", 'y:%s/<C-r><C-w>//gc<LEFT><LEFT><LEFT>', opts) 
 -- Clear search result highlighting
 vim.keymap.set("n", "c/", ":nohlsearch<CR>", opts)
 
+-- Clear multicursors
+--vim.keymap.set("n", "cq", "<C-l>") -- Doesn't work (yet?) (works with { remap = true } but  conflicts with quickfix navigation)
+vim.keymap.set("n", "cq", function()
+	local ns = vim.api.nvim_create_namespace("nvim.multicursor")
+	vim.api.nvim_buf_clear_namespace(0, ns, 0, -1)
+end)
+
 -- Insert true indentation on new lines
 vim.keymap.set("i", "<CR>", "<CR> <BS>", opts)
 vim.keymap.set("n", "o", "o <BS>", opts)
