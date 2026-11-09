@@ -16,7 +16,7 @@ vim.keymap.set("i", "<C-c>", "<ESC>", opts)
 -- Fold all first level folds
 vim.keymap.set("n", "zg", ":%foldclose<CR>", opts)
 
--- Movement in insert mode
+-- Move in insert mode with Ctrl+HJKL
 vim.keymap.set("i", "<C-h>", "<LEFT>" , opts)
 vim.keymap.set("i", "<C-j>", "<DOWN>" , opts)
 vim.keymap.set("i", "<C-k>", "<UP>"   , opts)
@@ -28,7 +28,7 @@ vim.keymap.set("n", "<C-k>", "k<C-y>", opts)
 vim.keymap.set("x", "<C-j>", "j<C-e>", opts)
 vim.keymap.set("x", "<C-k>", "k<C-y>", opts)
 
--- Movement between splits
+-- Movement between splits with LEADER+HJKL
 vim.keymap.set("n", "<LEADER>h", "<C-w>h", opts)
 vim.keymap.set("n", "<LEADER>j", "<C-w>j", opts)
 vim.keymap.set("n", "<LEADER>k", "<C-w>k", opts)
@@ -62,7 +62,7 @@ vim.keymap.set("x", "<LEADER>h", 'y:%s/<C-r><C-w>//gc<LEFT><LEFT><LEFT>', opts) 
 vim.keymap.set("n", "c/", ":nohlsearch<CR>", opts)
 
 -- Clear multicursors
---vim.keymap.set("n", "cq", "<C-l>") -- Doesn't work (yet?) (works with { remap = true } but  conflicts with quickfix navigation)
+--vim.keymap.set("n", "cq", "<C-l>") -- Doesn't work (yet?) (works with { remap = true } but conflicts with quickfix navigation)
 vim.keymap.set("n", "cq", function()
 	local ns = vim.api.nvim_create_namespace("nvim.multicursor")
 	vim.api.nvim_buf_clear_namespace(0, ns, 0, -1)
@@ -85,6 +85,15 @@ vim.keymap.set("n", "J", "m`J``", opts)
 -- Drag lines up or down
 vim.keymap.set("x", "J", ":m '>+1<CR>gv=gv", opts)
 vim.keymap.set("x", "K", ":m '<-2<CR>gv=gv", opts)
+
+-- Keep cursor on the same column when pasting a new line
+vim.keymap.set("n", "p", function()
+	if vim.fn.getregtype('"') == "V" then
+		vim.cmd("normal! m`p``j")
+	else
+		vim.cmd("normal! p")
+	end
+end)
 
 -- Paste over selection without overwriting buffer with Ctrl+P
 vim.keymap.set("x", "<C-p>", '"_dP', opts)

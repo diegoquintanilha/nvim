@@ -170,6 +170,7 @@ local function run_command(slot)
 		end
 	})
 	
+	-- If it is still inside the terminal, go to insert mode
 	vim.cmd("startinsert")
 end
 
@@ -234,19 +235,23 @@ vim.keymap.set("t", "<ESC>", "<C-\\><C-n>", opts)
 
 -- Parse the selected lines as compiler errors and put them into the quickfix list
 vim.keymap.set("x", "<LEADER>q", function()
-	-- Exit visual mode
-	vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<ESC>", true, false, true), "x", false)
-	
-	-- Get last selected lines
-	local selection_start = vim.fn.line("'<") - 1
-	local selection_end = vim.fn.line("'>")
+	-- Get the selected lines
+	local selection_start = vim.fn.line("v")
+	local selection_end = vim.fn.line(".")
+	if selection_start > selection_end then
+		selection_start, selection_end = selection_end, selection_start
+	end
+	selection_start = selection_start - 1
 	local lines = vim.api.nvim_buf_get_lines(0, selection_start, selection_end, false)
 	
-	-- Try populating the quickfix list, parsing the current slection as compiler errors
+	-- Try populating the quickfix list, parsing the current selection as compiler errors
 	local valid = lines_to_quickfix(lines)
 	
-	-- If there was at least one compiler error, open the quickfix list and go to the first error
+	-- Check if there was at least one compiler error
 	if valid then
+		-- Exit visual mode
+		vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<ESC>", true, false, true), "x", false)
+		-- Open the quickfix list and go to the first error
 		qf_list_go_to_error()
 	else
 		vim.notify("The current selection contains no compiler errors", vim.log.levels.ERROR)
