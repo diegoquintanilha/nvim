@@ -2,8 +2,8 @@
 local stored_commands = {
 	z = nil,
 	x = nil,
-	c = nil,
-	v = "g++ main.cpp -o app.exe && app.exe",
+	c = "g++ main.cpp -o app.exe && app.exe",
+	v = nil,
 }
 local command_slot_priority = { "v", "c", "x", "z" }
 
@@ -12,8 +12,18 @@ local output_last_cmd = nil
 
 -- Store a command into the given slot
 local function store_command(slot)
-	stored_commands[slot] = vim.fn.input("Store command on slot '".. slot .."': ", stored_commands[slot] or "")
-	vim.schedule(function() print("Command stored on slot '".. slot .."':", stored_commands[slot]) end)
+	vim.ui.input({
+		prompt = "Enter command for slot '".. slot .."': ",
+		default = stored_commands[slot] or ""
+	}, function(command)
+		if command == nil then
+			-- User cancelled the command
+			return
+		end
+		stored_commands[slot] = command
+		vim.cmd("redraw")
+		print("Command stored on slot '".. slot .."':", stored_commands[slot])
+	end)
 end
 
 -- Create user command to store terminal command

@@ -6,6 +6,12 @@ end, {})
 -- Clear startup screen
 vim.opt.shortmess:append("I")
 
+-- Do not show tabline
+vim.opt.showtabline = 0
+
+-- Enable persistent undo memory
+vim.opt.undofile = true
+
 -- Show absolute line number on the line where the cursor is, and relative line numbers on other lines
 vim.opt.number = true
 vim.opt.relativenumber = true
@@ -38,9 +44,6 @@ vim.opt.listchars = {
 	tab = "  ",
 	trail = "•",
 }
-
--- Enable persistent undo memory
-vim.opt.undofile = true
 
 -- Run the following commands everytime after opening any file
 -- This ensures that they are not overwritten by any language specific configs

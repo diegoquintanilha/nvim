@@ -54,19 +54,29 @@ vim.keymap.set("n", "<C-l>", ":cnext<CR>zz", opts)
 vim.keymap.set("n", "n", "nzvzz", opts)
 vim.keymap.set("n", "N", "Nzvzz", opts)
 
--- Search and replace selected
-vim.keymap.set("x", "<C-h>", 'y:%s/<C-r><C-w>//g<LEFT><LEFT>', opts)
-vim.keymap.set("x", "<LEADER>h", 'y:%s/<C-r><C-w>//gc<LEFT><LEFT><LEFT>', opts) -- Confirm each replacement
-
 -- Clear search result highlighting
 vim.keymap.set("n", "c/", ":nohlsearch<CR>", opts)
 
+-- Search and replace selected
+vim.keymap.set("x", "<C-h>", function() -- Replace immediately
+	vim.cmd('normal! y')
+	local command = ":%s/" .. vim.fn.escape(vim.fn.getreg('"'), "/\\") .. "//g<LEFT><LEFT>"
+	vim.fn.feedkeys(vim.api.nvim_replace_termcodes(command, true, false, true), "n")
+end)
+vim.keymap.set("x", "<LEADER>h", function() -- Confirm each replacement
+	vim.cmd('normal! y')
+	local command = ":%s/" .. vim.fn.escape(vim.fn.getreg('"'), "/\\") .. "//gc<LEFT><LEFT><LEFT>"
+	vim.fn.feedkeys(vim.api.nvim_replace_termcodes(command, true, false, true), "n")
+end)
+-- vim.keymap.set("x", "<C-h>", 'y:%s/<C-r><C-w>//g<LEFT><LEFT>', opts) -- Works but does not update the UI immediately
+-- vim.keymap.set("x", "<LEADER>h", 'y:%s/<C-r><C-w>//gc<LEFT><LEFT><LEFT>', opts) -- Confirm each replacement (same as above)
+
 -- Clear multicursors
---vim.keymap.set("n", "cq", "<C-l>") -- Doesn't work (yet?) (works with { remap = true } but conflicts with quickfix navigation)
 vim.keymap.set("n", "cq", function()
 	local ns = vim.api.nvim_create_namespace("nvim.multicursor")
 	vim.api.nvim_buf_clear_namespace(0, ns, 0, -1)
 end)
+-- vim.keymap.set("n", "cq", "<C-l>") -- Doesn't work (yet?) (works with { remap = true } but conflicts with quickfix navigation)
 
 -- Insert true indentation on new lines
 vim.keymap.set("i", "<CR>", "<CR> <BS>", opts)
@@ -89,8 +99,10 @@ vim.keymap.set("x", "K", ":m '<-2<CR>gv=gv", opts)
 -- Keep cursor on the same column when pasting a new line
 vim.keymap.set("n", "p", function()
 	if vim.fn.getregtype('"') == "V" then
+		-- Pasting from visual line mode
 		vim.cmd("normal! m`p``j")
 	else
+		-- Pasting from visual or visual block modes
 		vim.cmd("normal! p")
 	end
 end)
