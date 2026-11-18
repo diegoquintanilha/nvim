@@ -3,6 +3,7 @@ local stored_commands = {
 	z = nil,
 	x = nil,
 	c = "g++ main.cpp -o app.exe && app.exe",
+	-- c = "g++ main.cpp -o app && ./app",
 	v = nil,
 }
 local command_slot_priority = { "v", "c", "x", "z" }

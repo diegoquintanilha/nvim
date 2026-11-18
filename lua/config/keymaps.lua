@@ -28,7 +28,7 @@ vim.keymap.set("n", "<C-k>", "k<C-y>", opts)
 vim.keymap.set("x", "<C-j>", "j<C-e>", opts)
 vim.keymap.set("x", "<C-k>", "k<C-y>", opts)
 
--- Movement between splits with LEADER+HJKL
+-- Movement between splits with space and HJKL
 vim.keymap.set("n", "<LEADER>h", "<C-w>h", opts)
 vim.keymap.set("n", "<LEADER>j", "<C-w>j", opts)
 vim.keymap.set("n", "<LEADER>k", "<C-w>k", opts)
@@ -36,9 +36,6 @@ vim.keymap.set("n", "<LEADER>l", "<C-w>l", opts)
 
 -- Maximize current buffer
 vim.keymap.set("n", "<LEADER>o", "<C-w>o", opts)
-
--- Toggle to last buffer with Tab
-vim.keymap.set("n", "<TAB>", ":buffer #<CR>zz", opts)
 
 -- Keep cursor centered with Ctrl+U / Ctrl+D
 vim.keymap.set("n", "<C-u>", "<C-u>zz", opts)
@@ -80,10 +77,10 @@ end)
 
 -- Insert true indentation on new lines
 vim.keymap.set("i", "<CR>", "<CR> <BS>", opts)
-vim.keymap.set("n", "o", "o <BS>", opts)
-vim.keymap.set("n", "O", "O <BS>", opts)
+vim.keymap.set("n", "o" ,  "o <BS>", opts)
+vim.keymap.set("n", "O" ,  "O <BS>", opts)
 vim.keymap.set("n", "cc", "cc <BS>", opts)
-vim.keymap.set("x", "c", "c <BS>", opts)
+vim.keymap.set("x", "c" ,  "c <BS>", opts)
 
 -- Add line below / above without leaving normal mode
 vim.keymap.set("n", "co", "m`o <BS><ESC>``", opts)

@@ -7,63 +7,50 @@ local stored_buffers = {
 }
 local buffer_slot_priority = { "r", "e", "w", "q" }
 
--- Save current buffer into a slot
-local function save_buffer(slot)
+-- Store current buffer into a slot
+local function store_buffer(slot)
 	stored_buffers[slot] = vim.api.nvim_get_current_buf()
-	print("Saved buffer " .. stored_buffers[slot] .. " to slot '" .. slot .. "'")
+	print("Stored buffer " .. stored_buffers[slot] .. " in slot '" .. slot .. "'")
 end
 
--- Go to buffer stored in a slot
+-- Go to buffer stored in the given slot
 local function go_to_buffer(slot)
 	local buf = stored_buffers[slot]
 	if buf and vim.api.nvim_buf_is_valid(buf) then
-		vim.api.nvim_set_current_buf(buf)
-		vim.cmd("normal! zz")
+		if vim.g.neovide then
+			-- Save the current scroll animation length
+			local animation = vim.g.neovide_scroll_animation_length
+			-- Disable scroll animation
+			vim.g.neovide_scroll_animation_length = 0
+			-- Go to buffer
+			vim.api.nvim_set_current_buf(buf)
+			vim.cmd("normal! zz")
+			-- Restore scroll animation
+			vim.defer_fn(function()
+				vim.g.neovide_scroll_animation_length = animation
+			end, 20)
+		else
+			vim.api.nvim_set_current_buf(buf)
+			vim.cmd("normal! zz")
+		end
 	else
 		stored_buffers[slot] = nil -- In case it is storing an old, invalid buffer
 		vim.notify("No valid buffer in slot '" .. slot .. "'", vim.log.levels.ERROR)
 	end
 end
 
--- Automatically save a new buffer into the first available slot
-local function auto_save_buffer(buf)
-	-- Skip buffers that are already assigned
-	for _, saved in pairs(stored_buffers) do
-		if saved == buf then
-			return
-		end
-	end
-
-	-- Only save buffers that represent real editable text files
-	if vim.fn.buflisted(buf) ~= 1 -- Skip buffers that don't show up in :ls
-		or vim.bo[buf].buftype ~= "" -- Skip buffers with special types (terminal, quickfix, etc)
-		or vim.api.nvim_buf_get_name(buf) == "" -- Skip buffers with no name
-	then
-		return
-	end
-
-	-- Check slot availability according to the priority
-	for _, slot in ipairs(buffer_slot_priority) do
-		local buf_slot = stored_buffers[slot]
-		if not buf_slot or not vim.api.nvim_buf_is_valid(buf_slot) then
-			stored_buffers[slot] = buf
-			return
-		end
-	end
-end
-
--- Call auto_save_buffer for all buffers when starting Neovim
+-- Store all buffers into the available slots when starting Neovim
 vim.api.nvim_create_autocmd("VimEnter", {
 	callback = function()
 		for _, buf in ipairs(vim.api.nvim_list_bufs()) do
-			auto_save_buffer(buf)
+			-- Store buffers in slots according to the slot priority
+			for _, slot in ipairs(buffer_slot_priority) do
+				if not stored_buffers[slot] then
+					stored_buffers[slot] = buf
+					break
+				end
+			end
 		end
-	end,
-})
--- Call auto_save_buffer for every new buffer
-vim.api.nvim_create_autocmd("BufEnter", {
-	callback = function(args)
-		auto_save_buffer(args.buf)
 	end,
 })
 
@@ -75,11 +62,11 @@ vim.api.nvim_create_user_command("BufferSlots", function()
 		local buf = stored_buffers[slot]
 
 		if buf and vim.api.nvim_buf_is_valid(buf) then
+			-- Print buffer name (if it has one)
 			local name = vim.api.nvim_buf_get_name(buf)
 			if name == "" then
 				name = "[No Name]"
 			end
-
 			table.insert(lines, string.format("%s -> b%d %s", slot, buf, name))
 		else
 			stored_buffers[slot] = nil -- In case it is storing an old, invalid buffer
@@ -91,14 +78,34 @@ vim.api.nvim_create_user_command("BufferSlots", function()
 end, {})
 
 -- Store current buffer in q, w, e or r
-vim.keymap.set("n", "<LEADER>bq", function() save_buffer("q") end)
-vim.keymap.set("n", "<LEADER>bw", function() save_buffer("w") end)
-vim.keymap.set("n", "<LEADER>be", function() save_buffer("e") end)
-vim.keymap.set("n", "<LEADER>br", function() save_buffer("r") end)
+vim.keymap.set("n", "<LEADER>bq", function() store_buffer("q") end)
+vim.keymap.set("n", "<LEADER>bw", function() store_buffer("w") end)
+vim.keymap.set("n", "<LEADER>be", function() store_buffer("e") end)
+vim.keymap.set("n", "<LEADER>br", function() store_buffer("r") end)
 
 -- Go to stored buffer in q, w, e or r
 vim.keymap.set("n", "<LEADER>q", function() go_to_buffer("q") end)
 vim.keymap.set("n", "<LEADER>w", function() go_to_buffer("w") end)
 vim.keymap.set("n", "<LEADER>e", function() go_to_buffer("e") end)
 vim.keymap.set("n", "<LEADER>r", function() go_to_buffer("r") end)
+
+-- Go to previous buffer
+vim.keymap.set("n", "<TAB>", function()
+	if vim.g.neovide then
+		-- Save the current scroll animation length
+		local animation = vim.g.neovide_scroll_animation_length
+		-- Disable scroll animation
+		vim.g.neovide_scroll_animation_length = 0
+		-- Go to buffer
+		vim.cmd("buffer #")
+		vim.cmd("normal! zz")
+		-- Restore scroll animation
+		vim.defer_fn(function()
+			vim.g.neovide_scroll_animation_length = animation
+		end, 20)
+	else
+		vim.cmd("buffer #")
+		vim.cmd("normal! zz")
+	end
+end)
 
