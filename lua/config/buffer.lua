@@ -91,20 +91,25 @@ vim.keymap.set("n", "<LEADER>r", function() go_to_buffer("r") end)
 
 -- Go to previous buffer
 vim.keymap.set("n", "<TAB>", function()
+	local buf = vim.fn.bufnr("#")
+	if buf == -1 then
+		vim.notify("Invalid previous buffer", vim.log.levels.ERROR)
+		return
+	end
 	if vim.g.neovide then
 		-- Save the current scroll animation length
 		local animation = vim.g.neovide_scroll_animation_length
 		-- Disable scroll animation
 		vim.g.neovide_scroll_animation_length = 0
 		-- Go to buffer
-		vim.cmd("buffer #")
+		vim.api.nvim_set_current_buf(buf)
 		vim.cmd("normal! zz")
 		-- Restore scroll animation
 		vim.defer_fn(function()
 			vim.g.neovide_scroll_animation_length = animation
 		end, 20)
 	else
-		vim.cmd("buffer #")
+		vim.api.nvim_set_current_buf(buf)
 		vim.cmd("normal! zz")
 	end
 end)
