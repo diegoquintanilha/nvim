@@ -34,7 +34,7 @@ vim.keymap.set("n", "<LEADER>j", "<C-w>j", opts)
 vim.keymap.set("n", "<LEADER>k", "<C-w>k", opts)
 vim.keymap.set("n", "<LEADER>l", "<C-w>l", opts)
 
--- Maximize current buffer
+-- Maximize current split
 vim.keymap.set("n", "<LEADER>o", "<C-w>o", opts)
 
 -- Keep cursor centered with Ctrl+U / Ctrl+D

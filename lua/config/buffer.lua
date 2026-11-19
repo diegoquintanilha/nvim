@@ -39,6 +39,18 @@ local function go_to_buffer(slot)
 	end
 end
 
+-- Global function to get the slot of the current buffer, if it is stored in one
+_G.get_buffer_slot = function()
+	buf = vim.api.nvim_get_current_buf()
+	for _, slot in ipairs(buffer_slot_priority) do
+		if stored_buffers[slot] == buf then
+			return slot
+		end
+	end
+	-- If current buffer is not stored in a slot, return the buffer number
+	return buf
+end
+
 -- Store all buffers into the available slots when starting Neovim
 vim.api.nvim_create_autocmd("VimEnter", {
 	callback = function()

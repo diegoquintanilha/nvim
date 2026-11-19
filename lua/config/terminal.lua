@@ -185,7 +185,7 @@ local function run_command(slot)
 	vim.cmd("startinsert")
 end
 
--- Custom function to print the quickfix list
+-- Custom function to generate the quickfix list text
 function _G.QuickfixListText(qf)
 	local qf_list = vim.fn.getqflist({ id = qf.id, items = 1 })
 	local lines = {}
@@ -239,13 +239,13 @@ vim.keymap.set("n", "<LEADER>c", function() run_command("c") end)
 vim.keymap.set("n", "<LEADER>v", function() run_command("v") end)
 
 -- Keymap to open a new terminal window
-vim.keymap.set("n", "<LEADER>t", ":term<CR>i", opts)
+vim.keymap.set("n", "<LEADER>tt", ":term<CR>i", opts)
 
 -- Exit insert mode in terminal with ESC
 vim.keymap.set("t", "<ESC>", "<C-\\><C-n>", opts)
 
 -- Parse the selected lines as compiler errors and put them into the quickfix list
-vim.keymap.set("x", "<LEADER>q", function()
+vim.keymap.set("x", "<LEADER>tq", function()
 	-- Get the selected lines
 	local selection_start = vim.fn.line("v")
 	local selection_end = vim.fn.line(".")
