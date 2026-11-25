@@ -43,6 +43,10 @@ vim.keymap.set("n", "<C-d>", "<C-d>zz", opts)
 vim.keymap.set("x", "<C-u>", "<C-u>zz", opts)
 vim.keymap.set("x", "<C-d>", "<C-d>zz", opts)
 
+-- Leave a space of 6 lines when going to the end of the file
+vim.keymap.set("n", "G", "G6<C-e>", opts)
+vim.keymap.set("x", "G", "G6<C-e>", opts)
+
 -- Navigate the quickfix list with Ctrl+H and Ctrl+L
 vim.keymap.set("n", "<C-h>", ":cprev<CR>zz", opts)
 vim.keymap.set("n", "<C-l>", ":cnext<CR>zz", opts)
